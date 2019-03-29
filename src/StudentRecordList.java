@@ -21,8 +21,9 @@ public class StudentRecordList extends JFrame {
     private JTextField userInputTextField;
     private JTextField selectedTextField;
     private JButton getUserInput;
-    private JButton load;
-    private JButton clear;
+    private JButton createTree;
+    private JButton browse;
+    private JButton find;
     private JList<String> listArea;
     private DefaultListModel<String> listModel;
     private JScrollPane listScrollPane;
@@ -30,7 +31,7 @@ public class StudentRecordList extends JFrame {
 
     // Constructor
     public StudentRecordList() {
-        this.setTitle("Student Records");
+        this.setTitle("Main Window");
         this.setBounds(50, 50, 500, 400);
 
         this.add(createUpperPanel(), BorderLayout.NORTH);
@@ -42,23 +43,18 @@ public class StudentRecordList extends JFrame {
     }
 
     /**
-     * Method to create the upper panel that will hold the text field, button
-     * and label. This method creates the panel and returns it to be added to
-     * the container.
+     * Method to create the upper panel that will hold a JTextField and a
+     * JLabel. This method creates the panel and returns it to be added to the
+     * container.
      */
     private JPanel createUpperPanel() {
         JPanel upperPanel = new JPanel();
-        userInputTextField = new JTextField(10);
-        upperPanel.add(userInputTextField);
-        getUserInput = new JButton("Add Value");
-        getUserInput.addActionListener(new ButtonListener());
-        upperPanel.add(getUserInput);
-        clear = new JButton("ClearList");
-        clear.addActionListener(new ButtonListener());
-        upperPanel.add(clear);
-        load = new JButton("Load From File");
-        load.addActionListener(new ButtonListener());
-        upperPanel.add(load);
+        upperPanel.setBackground(new Color(230, 230, 230));
+        JLabel label = new JLabel("An Application to Maintain Student Records");
+        //selectedTextField = new JTextField(20);
+
+        upperPanel.add(label);
+        //upperPanel.add(selectedTextField);
         return upperPanel;
     }
 
@@ -68,7 +64,7 @@ public class StudentRecordList extends JFrame {
      */
     private JPanel createCenterPanel() {
         JPanel centerPanel = new JPanel();
-        centerPanel.setBackground(new Color(150, 150, 150));
+        //centerPanel.setBackground(new Color(150, 150, 150));
         centerPanel.setBorder(panelEdge);
         listModel = new DefaultListModel<String>();
         listArea = new JList<String>(listModel);
@@ -78,24 +74,34 @@ public class StudentRecordList extends JFrame {
         listArea.setVisibleRowCount(15);
         listArea.addListSelectionListener(new ListListener());
         listScrollPane = new JScrollPane(listArea);
-        listModel.addElement("Initial Value");
+        //listModel.addElement("Initial Value");
         centerPanel.add(listScrollPane);
         return centerPanel;
     }
 
+
     /**
-     * Method to create the lower panel that will hold a JTextField and a
-     * JLabel. This method creates the panel and returns it to be added to the
-     * container.
+     * Method to create the lower panel that will hold the text field, button
+     * and label. This method creates the panel and returns it to be added to
+     * the container.
      */
     private JPanel createLowerPanel() {
         JPanel lowerPanel = new JPanel();
-        lowerPanel.setBackground(new Color(100, 100, 100));
-        JLabel label = new JLabel("Selected Value:");
-        selectedTextField = new JTextField(20);
+        //userInputTextField = new JTextField(10);
+        //lowerPanel.add(userInputTextField);
+        getUserInput = new JButton("Insert");
+        getUserInput.addActionListener(new ButtonListener());
+        lowerPanel.add(getUserInput);
+        find = new JButton("Find");
+        find.addActionListener(new ButtonListener());
+        lowerPanel.add(find);
+        browse = new JButton("Browse");
+        browse.addActionListener(new ButtonListener());
+        lowerPanel.add(browse);
+        createTree = new JButton("Create Tree from File");
+        createTree.addActionListener(new ButtonListener());
+        lowerPanel.add(createTree);
 
-        lowerPanel.add(label);
-        lowerPanel.add(selectedTextField);
         return lowerPanel;
     }
 
@@ -108,7 +114,7 @@ public class StudentRecordList extends JFrame {
                 if(text.length()>0)
                     listModel.addElement(text);
             }
-            else if(e.getSource() == load){
+            else if(e.getSource() == createTree){
                 File file = new File("my_input.txt");
                 try {
                     Scanner inputFile = new Scanner(file);
@@ -119,7 +125,7 @@ public class StudentRecordList extends JFrame {
                     System.out.println(e1.getMessage());
                 }
             }
-            else if(e.getSource() == clear){
+            else if(e.getSource() == find){
                 listModel.removeAllElements();
 
             }
