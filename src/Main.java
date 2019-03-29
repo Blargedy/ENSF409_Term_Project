@@ -6,8 +6,15 @@ public class Main {
         System.out.println("Reading data from file");
         String filename = "input.txt";
         BinSearchTree studentData = readFile(filename);
+        new StudentRecordList();
     }
 
+    /**
+     * takes the name of a file as input and parses the contents into a binary search tree
+     * @param filename name of the file from which to read
+     * @return binary search tree containing data with each line of the tree being one line in the
+     * text input file
+     */
     public static BinSearchTree readFile(String filename){
         File file;
         BufferedReader br;
