@@ -25,6 +25,7 @@ public class StudentRecordList extends JFrame {
     private JButton find;
     private JList<String> listArea;
     private DefaultListModel<String> listModel;
+    private BinSearchTree studentRecordTree;
 
     private JScrollPane listScrollPane;
     private Border panelEdge = BorderFactory.createEtchedBorder();
@@ -111,7 +112,7 @@ public class StudentRecordList extends JFrame {
      * @return binary search tree containing data with each line of the tree being one line in the
      * text input file
      */
-    public static BinSearchTree readFile(String filename){
+    public BinSearchTree readFile(String filename){
         File file;
         BufferedReader br;
         BinSearchTree BST = new BinSearchTree();
@@ -121,6 +122,7 @@ public class StudentRecordList extends JFrame {
             try {
                 String line;
                 while ((line = br.readLine()) != null){
+                    listModel.addElement(line);
                     String[] splitLine = line.split("\\s+");
                     BST.insert(splitLine[1], splitLine[2], splitLine[3], splitLine[4]);
                 }
@@ -147,18 +149,17 @@ public class StudentRecordList extends JFrame {
                     listModel.addElement(text);
             }
             else if(e.getSource() == createTree){
-//                String filename = "input.txt";
-//                BinSearchTree studentRecordTree = readFile(filename);
-//                while (studentRecordTree.)
-                File file = new File("input.txt");
-                try {
-                    Scanner inputFile = new Scanner(file);
-                    while(inputFile.hasNextLine()){
-                        listModel.addElement(inputFile.nextLine());
-                    }
-                } catch (FileNotFoundException e1) {
-                    System.out.println(e1.getMessage());
-                }
+                String filename = "input.txt";
+//                File file = new File(filename);
+//                try {
+//                    Scanner inputFile = new Scanner(file);
+//                    while(inputFile.hasNextLine()){
+//                        listModel.addElement(inputFile.nextLine());
+//                    }
+//                } catch (FileNotFoundException e1) {
+//                    System.out.println(e1.getMessage());
+//                }
+                studentRecordTree = readFile(filename);
             }
             else if(e.getSource() == find){
                 listModel.removeAllElements();
