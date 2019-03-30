@@ -55,10 +55,8 @@ public class StudentRecordList extends JFrame {
         JPanel upperPanel = new JPanel();
         upperPanel.setBackground(new Color(230, 230, 230));
         JLabel label = new JLabel("An Application to Maintain Student Records");
-        //selectedTextField = new JTextField(20);
 
         upperPanel.add(label);
-        //upperPanel.add(selectedTextField);
         return upperPanel;
     }
 
@@ -68,7 +66,6 @@ public class StudentRecordList extends JFrame {
      */
     private JPanel createCenterPanel() {
         JPanel centerPanel = new JPanel();
-        //centerPanel.setBackground(new Color(150, 150, 150));
         centerPanel.setBorder(panelEdge);
         listModel = new DefaultListModel<String>();
         listArea = new JList<String>(listModel);
@@ -78,7 +75,6 @@ public class StudentRecordList extends JFrame {
         listArea.setVisibleRowCount(15);
         listArea.addListSelectionListener(new ListListener());
         listScrollPane = new JScrollPane(listArea);
-        //listModel.addElement("Initial Value");
         centerPanel.add(listScrollPane);
         return centerPanel;
     }
