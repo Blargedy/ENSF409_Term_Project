@@ -4,7 +4,6 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.Scanner;
 
 
 /**
@@ -19,10 +18,14 @@ public class StudentRecordList extends JFrame {
     // Attributes
     private JTextField userInputTextField;
     private JTextField selectedTextField;
-    private JButton getUserInput;
+    private JButton insert;
     private JButton createTree;
     private JButton browse;
     private JButton find;
+    private JButton filenameOkButton;
+    private JButton filenameCancelButton;
+    private JTextField filenameField;
+    private JDialog fileDialog;
     private JList<String> listArea;
     private DefaultListModel<String> listModel;
     private BinSearchTree studentRecordTree;
@@ -33,7 +36,7 @@ public class StudentRecordList extends JFrame {
     // Constructor
     public StudentRecordList() {
         this.setTitle("Main Window");
-        this.setBounds(50, 50, 500, 400);
+        this.setBounds(300, 250, 500, 400);
 
         this.add(createUpperPanel(), BorderLayout.NORTH);
         this.add(createCenterPanel(), BorderLayout.CENTER);
@@ -88,11 +91,9 @@ public class StudentRecordList extends JFrame {
      */
     private JPanel createLowerPanel() {
         JPanel lowerPanel = new JPanel();
-        //userInputTextField = new JTextField(10);
-        //lowerPanel.add(userInputTextField);
-        getUserInput = new JButton("Insert");
-        getUserInput.addActionListener(new ButtonListener());
-        lowerPanel.add(getUserInput);
+        insert = new JButton("Insert");
+        insert.addActionListener(new ButtonListener());
+        lowerPanel.add(insert);
         find = new JButton("Find");
         find.addActionListener(new ButtonListener());
         lowerPanel.add(find);
@@ -143,28 +144,56 @@ public class StudentRecordList extends JFrame {
 
     public class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == getUserInput) {
+            if (e.getSource() == insert) {
                 String text = userInputTextField.getText();
                 if(text.length()>0)
                     listModel.addElement(text);
             }
-            else if(e.getSource() == createTree){
-                String filename = "input.txt";
-//                File file = new File(filename);
-//                try {
-//                    Scanner inputFile = new Scanner(file);
-//                    while(inputFile.hasNextLine()){
-//                        listModel.addElement(inputFile.nextLine());
-//                    }
-//                } catch (FileNotFoundException e1) {
-//                    System.out.println(e1.getMessage());
-//                }
-                studentRecordTree = readFile(filename);
-            }
             else if(e.getSource() == find){
-                listModel.removeAllElements();
-
+                if(studentRecordTree.empty())
+                    System.out.println("Generate tree first you dum dum");
+                Node searchResult = studentRecordTree.find(studentRecordTree.root, "64939");
+                if(searchResult == null)
+                    System.out.println("record not found");
+                else
+                    System.out.println(searchResult.toString());
             }
+            else if(e.getSource() == browse){
+                listModel.removeAllElements();
+            }
+            else if(e.getSource() == createTree){
+
+                fileDialog = new JDialog();
+
+
+                JPanel controls = new JPanel();
+                filenameOkButton= new JButton("OK");
+                filenameOkButton.addActionListener(new ButtonListener());
+                controls.add(filenameOkButton);
+                filenameCancelButton= new JButton("Cancel");
+                filenameCancelButton.addActionListener(new ButtonListener());
+                controls.add(filenameCancelButton);
+
+
+                JPanel textArea = new JPanel();
+                filenameField = new JTextField(20);
+                textArea.add(filenameField);
+
+                fileDialog.setBounds(220, 150, 400, 200);
+
+                fileDialog.add(textArea, BorderLayout.NORTH);
+                fileDialog.add(controls, BorderLayout.SOUTH);
+                fileDialog.setVisible(true);
+            }
+            else if (e.getSource() == filenameOkButton) {
+                String filename = filenameField.getText();
+                studentRecordTree = readFile(filename);
+                fileDialog.setVisible(false);
+            }
+            else if (e.getSource() == filenameCancelButton) {
+                fileDialog.setVisible(false);
+            }
+
         }
     }
 
