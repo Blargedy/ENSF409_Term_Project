@@ -24,8 +24,10 @@ public class StudentRecordList extends JFrame {
     private JButton find;
     private JButton filenameOkButton;
     private JButton filenameCancelButton;
+    private JButton toastOkButton;
     private JTextField filenameField;
     private JDialog fileDialog;
+    private JDialog toastDialog;
     private JList<String> listArea;
     private DefaultListModel<String> listModel;
     private BinSearchTree studentRecordTree;
@@ -125,12 +127,12 @@ public class StudentRecordList extends JFrame {
                 }
 
             } catch (IOException e) {
-                System.out.println("IO exception");
+                displayToast("IO exception");
                 e.printStackTrace();
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("File not found exception");
+            displayToast("File not found exception");
             e.printStackTrace();
         }
         return BST;
@@ -146,13 +148,16 @@ public class StudentRecordList extends JFrame {
                     listModel.addElement(text);
             }
             else if(e.getSource() == find){
-                if(studentRecordTree.empty())
-                    System.out.println("Generate tree first you dum dum");
-                Node searchResult = studentRecordTree.find(studentRecordTree.root, "64939");
-                if(searchResult == null)
-                    System.out.println("record not found");
-                else
-                    System.out.println(searchResult.toString());
+                if(studentRecordTree == null) {
+                    displayToast("Records are empty. Import data first");
+                }
+                else{
+                    Node searchResult = studentRecordTree.find(studentRecordTree.root, "64939");
+                    if(searchResult == null)
+                        displayToast("record not found");
+                    else
+                        displayToast(searchResult.toString());
+                }
             }
             else if(e.getSource() == browse){
                 listModel.removeAllElements();
@@ -160,7 +165,6 @@ public class StudentRecordList extends JFrame {
             else if(e.getSource() == createTree){
 
                 fileDialog = new JDialog();
-
 
                 JPanel controls = new JPanel();
                 filenameOkButton= new JButton("OK");
@@ -179,6 +183,7 @@ public class StudentRecordList extends JFrame {
 
                 fileDialog.add(textArea, BorderLayout.NORTH);
                 fileDialog.add(controls, BorderLayout.SOUTH);
+                fileDialog.setTitle("Input");
                 fileDialog.setVisible(true);
             }
             else if (e.getSource() == filenameOkButton) {
@@ -189,8 +194,23 @@ public class StudentRecordList extends JFrame {
             else if (e.getSource() == filenameCancelButton) {
                 fileDialog.setVisible(false);
             }
-
+            else if (e.getSource() == toastOkButton) {
+                toastDialog.setVisible(false);
+            }
         }
+    }
+
+    public void displayToast(String message){
+        JTextArea displayToastTextArea = new JTextArea(message);
+        toastDialog = new JDialog();
+        JPanel controls = new JPanel();
+        toastOkButton= new JButton("OK");
+        toastOkButton.addActionListener(new ButtonListener());
+        controls.add(toastOkButton);
+        toastDialog.setBounds(220, 150, 400, 200);
+        toastDialog.add(displayToastTextArea);
+        toastDialog.add(controls, BorderLayout.SOUTH);
+        toastDialog.setVisible(true);
     }
 
     public class ListListener implements ListSelectionListener {
