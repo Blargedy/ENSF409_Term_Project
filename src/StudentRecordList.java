@@ -25,9 +25,20 @@ public class StudentRecordList extends JFrame {
     private JButton filenameOkButton;
     private JButton filenameCancelButton;
     private JButton toastOkButton;
+    private JButton insertInsertButton;
+    private JButton insertReturnButton;
+    private JButton findOkButton;
+    private JButton findCancelButton;
     private JTextField filenameField;
+    private JTextField studentIdField;
+    private JTextField facultyField;
+    private JTextField studentMajorField;
+    private JTextField studentYearField;
+    private JTextField searchStudentIdField;
     private JDialog fileDialog;
     private JDialog toastDialog;
+    private JDialog insertDialog;
+    private JDialog searchDialog;
     private JList<String> listArea;
     private DefaultListModel<String> listModel;
     private BinSearchTree studentRecordTree;
@@ -143,32 +154,72 @@ public class StudentRecordList extends JFrame {
     public class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == insert) {
-                String text = userInputTextField.getText();
-                if(text.length()>0)
-                    listModel.addElement(text);
+                insertDialog = new JDialog();
+
+                JPanel controls = new JPanel();
+                insertInsertButton = new JButton("Insert");
+                insertInsertButton.addActionListener(new ButtonListener());
+                controls.add(insertInsertButton);
+                insertReturnButton = new JButton("Return to Main Window");
+                insertReturnButton.addActionListener(new ButtonListener());
+                controls.add(insertReturnButton);
+
+                JPanel textArea = new JPanel();
+                studentIdField = new JTextField(20);
+                textArea.add(studentIdField);
+                facultyField = new JTextField(20);
+                textArea.add(facultyField);
+                studentMajorField = new JTextField(20);
+                textArea.add(studentMajorField);
+                studentYearField = new JTextField(20);
+                textArea.add(studentYearField);
+
+                insertDialog.setBounds(220, 150, 400, 200);
+
+                insertDialog.add(textArea, BorderLayout.NORTH);
+                insertDialog.add(controls, BorderLayout.SOUTH);
+                insertDialog.setTitle("Insert a New Node");
+                insertDialog.setVisible(true);
+
+                String studentId = studentIdField.getText();
+                String faculty = facultyField.getText();
+                String studentMajor = studentMajorField.getText();
+                String studentYear = studentYearField.getText();
+                studentRecordTree.insert(studentId, faculty, studentMajor, studentYear);
             }
             else if(e.getSource() == find){
                 if(studentRecordTree == null) {
                     displayToast("Records are empty. Import data first");
                 }
                 else{
-                    Node searchResult = studentRecordTree.find(studentRecordTree.root, "64939");
-                    if(searchResult == null)
-                        displayToast("record not found");
-                    else
-                        displayToast(searchResult.toString());
+                    searchDialog = new JDialog();
+
+                    JPanel controls = new JPanel();
+                    findCancelButton = new JButton("Cancel");
+                    findCancelButton.addActionListener(new ButtonListener());
+                    controls.add(findCancelButton);
+                    findOkButton = new JButton("OK");
+                    findOkButton.addActionListener(new ButtonListener());
+                    controls.add(findOkButton);
+
+                    JPanel textArea = new JPanel();
+                    searchStudentIdField = new JTextField(20);
+                    textArea.add(searchStudentIdField);
+                    searchDialog.setVisible(true);
+                    searchDialog.setBounds(220, 150, 400, 200);
                 }
             }
             else if(e.getSource() == browse){
-                listModel.removeAllElements();
+
             }
             else if(e.getSource() == createTree){
-
                 fileDialog = new JDialog();
+                JTextArea createTextPrompt = new JTextArea("Enter the file name:");
 
                 JPanel controls = new JPanel();
                 filenameOkButton= new JButton("OK");
                 filenameOkButton.addActionListener(new ButtonListener());
+                controls.add(createTextPrompt);
                 controls.add(filenameOkButton);
                 filenameCancelButton= new JButton("Cancel");
                 filenameCancelButton.addActionListener(new ButtonListener());
@@ -196,6 +247,20 @@ public class StudentRecordList extends JFrame {
             }
             else if (e.getSource() == toastOkButton) {
                 toastDialog.setVisible(false);
+            }
+            else if (e.getSource() == insertInsertButton) {
+                insertDialog.setVisible(false);
+            }
+            else if (e.getSource() == insertReturnButton) {
+                insertDialog.setVisible(false);
+            }
+            else if (e.getSource() == findCancelButton) {
+                searchDialog.setVisible(false);
+            }
+            else if (e.getSource() == findOkButton) {
+                String studentId = searchStudentIdField.getText();
+                displayToast(studentRecordTree.find(studentRecordTree.root, studentId).toString());
+                searchDialog.setVisible(false);
             }
         }
     }
