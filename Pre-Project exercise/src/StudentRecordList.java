@@ -192,8 +192,8 @@ public class StudentRecordList extends JFrame {
                     displayToast("Records are empty. Import data first");
                 }
                 else{
+                    displayToast("this worked  5 minutes ago. java pls.");
                     searchDialog = new JDialog();
-
                     JPanel controls = new JPanel();
                     findCancelButton = new JButton("Cancel");
                     findCancelButton.addActionListener(new ButtonListener());
@@ -202,11 +202,11 @@ public class StudentRecordList extends JFrame {
                     findOkButton.addActionListener(new ButtonListener());
                     controls.add(findOkButton);
 
-                    JPanel textArea = new JPanel();
+                    JPanel searchTextArea = new JPanel();
                     searchStudentIdField = new JTextField(20);
-                    textArea.add(searchStudentIdField);
-                    searchDialog.setVisible(true);
+                    searchTextArea.add(searchStudentIdField);
                     searchDialog.setBounds(220, 150, 400, 200);
+                    searchDialog.setVisible(true);
                 }
             }
             else if(e.getSource() == browse){
