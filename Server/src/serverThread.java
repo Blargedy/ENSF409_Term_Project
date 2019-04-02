@@ -13,12 +13,12 @@ public class serverThread implements Runnable{
 
     public serverThread(Socket aSocket){
         this.aSocket = aSocket;
-        System.out.println("Server is running");
+        System.out.println("New connection started");
         try {
             socketInput = new BufferedReader(new InputStreamReader(aSocket.getInputStream()));
             socketOutput = new PrintWriter(aSocket.getOutputStream(), true);
         } catch (IOException e) {
-            System.out.println("unable to create input or output streams");
+            System.out.println("Unable to create input or output streams");
             e.printStackTrace();
         }
     }
@@ -30,7 +30,7 @@ public class serverThread implements Runnable{
             try {
                 line = new StringBuffer(socketInput.readLine());
             } catch (IOException e) {
-                System.out.println("unable to read line from socket");
+                System.out.println("Unable to read line from socket");
                 e.printStackTrace();
             }
             if (line != null) {
@@ -53,8 +53,9 @@ public class serverThread implements Runnable{
         try {
             socketInput.close();
             socketOutput.close();
+            System.out.println("Connection closed");
         } catch (IOException e) {
-            System.out.println("unable to close sockets");
+            System.out.println("Unable to close sockets");
             e.printStackTrace();
         }
     }
