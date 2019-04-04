@@ -78,7 +78,13 @@ public class toolShopClient {
 					case 2: //search for tool by tool name
 						System.out.println(socketIn.readLine()); //request to enter item name
 						socketOut.println(stdIn.readLine());	//send user input
-						System.out.println(receiveObjectOverSocket().toString()); //print received object
+						Item receivedItem = receiveItemOverSocket();
+						if(receivedItem == null){
+							System.out.println("item not found");
+						}
+						else{
+							System.out.println(receivedItem); //print received object
+						}
 						break;
 					case 3: //search for tool by tool id
 						break;
@@ -93,9 +99,6 @@ public class toolShopClient {
 					default: //invalid input
 						break;
 				}
-
-				response = socketIn.readLine();
-				System.out.println(response);
 
 			} catch (IOException e) {
 				System.out.println("Sending error: " + e.getMessage());
@@ -124,42 +127,42 @@ public class toolShopClient {
 		return null;
 	}
 
-//	public Item receiveItemOverSocket(){
-//		try {
-//			return (Item) objectInputStream.readObject();
-//		} catch (IOException e) {
-//			System.out.println("error with IO during item read");
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			System.out.println("error finding class during Item read");
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-//
-//	public Order receiveOrderOverSocket(){
-//		try {
-//			return (Order) objectInputStream.readObject();
-//		} catch (IOException e) {
-//			System.out.println("error with IO during Order read");
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			System.out.println("error finding class during Order read");
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-//
-//	public Supplier receiveSupplierOverSocket(){
-//		try {
-//			return (Supplier) objectInputStream.readObject();
-//		} catch (IOException e) {
-//			System.out.println("error with IO during Supplier read");
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			System.out.println("error finding class during Supplier read");
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
+	public Item receiveItemOverSocket(){
+		try {
+			return (Item) objectInputStream.readObject();
+		} catch (IOException e) {
+			System.out.println("error with IO during item read");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("error finding class during Item read");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Order receiveOrderOverSocket(){
+		try {
+			return (Order) objectInputStream.readObject();
+		} catch (IOException e) {
+			System.out.println("error with IO during Order read");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("error finding class during Order read");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Supplier receiveSupplierOverSocket(){
+		try {
+			return (Supplier) objectInputStream.readObject();
+		} catch (IOException e) {
+			System.out.println("error with IO during Supplier read");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("error finding class during Supplier read");
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

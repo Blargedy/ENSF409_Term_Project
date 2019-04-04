@@ -1,9 +1,5 @@
 import java.io.*;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Scanner;
 
 /**
  * Orignal name of file: FrontEnd.java
@@ -45,71 +41,15 @@ public class serverThread implements Runnable{
     }
 
     public class FrontEnd {
-
-        private ArrayList<Supplier> suppliers;
-        private Inventory theInventory;
+//        private Inventory theInventory;
         private Shop theShop;
         private String readFromSocket;
         private int menuChoice;
 
         FrontEnd() {
-            suppliers = new ArrayList<Supplier>();
-            readSuppliers();
-            theInventory = new Inventory(readItems());
-            theShop = new Shop(theInventory, suppliers);
+            theShop = new Shop();
             readFromSocket = null;
             menuChoice = -1;
-        }
-
-        /**
-         * populate the list of items in stock from the text file "items.txt"
-         * @return
-         */
-        private ArrayList<Item> readItems() {
-
-            ArrayList<Item> items = new ArrayList<Item>();
-
-            try {
-                FileReader fr = new FileReader("items.txt");
-                BufferedReader br = new BufferedReader(fr);
-
-                String line = "";
-                while ((line = br.readLine()) != null) {
-                    String[] temp = line.split(";");
-                    int supplierId = Integer.parseInt(temp[4]);
-                    Supplier theSupplier = null;
-
-                        for (Supplier i: suppliers) {
-                            if (i.getSupId() == supplierId)
-                                theSupplier = i;
-                        }
-                    if (theSupplier != null) {
-                        Item myItem = new Item(Integer.parseInt(temp[0]), temp[1], Integer.parseInt(temp[2]),
-                                Double.parseDouble(temp[3]), theSupplier);
-                        items.add(myItem);
-                        theSupplier.getItemList().add(myItem);
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("error parsing items.txt");
-                System.out.println(e.getMessage());
-            }
-            return items;
-        }
-
-        private void readSuppliers() {
-            try {
-                FileReader fr = new FileReader("suppliers.txt");
-                BufferedReader br = new BufferedReader(fr);
-
-                String line = "";
-                while ((line = br.readLine()) != null) {
-                    String[] temp = line.split(";");
-                    suppliers.add(new Supplier(Integer.parseInt(temp[0]), temp[1], temp[2], temp[3]));
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
         }
 
         private void printMenuChoices() {
@@ -150,7 +90,7 @@ public class serverThread implements Runnable{
                         socketOutput.println("Enter the name of the item to search for");
                         Item toBeSent = null;
                         try {
-                            toBeSent = theInventory.searchForItem(socketInput.readLine());
+                            toBeSent = theShop.getItem(socketInput.readLine());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -23,15 +23,15 @@ public class Item {
 		this.supplier = supplier;
 		this.alreadyOrdered = false;
 	}
-	
-	public boolean decreaseItemQuantity () {
-		if (itemQuantity > 0) {
-			itemQuantity--;
-		    return true;	
-		}
-		else
-			return false;
-	}
+
+//	public boolean decreaseItemQuantity () {
+//		if (itemQuantity > 0) {
+//			itemQuantity--;
+//		    return true;
+//		}
+//		else
+//			return false;
+//	}
 
 	public OrderLine placeOrder (){
 		OrderLine ol;

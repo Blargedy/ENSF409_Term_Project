@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 /**
@@ -8,10 +10,49 @@ import java.util.ArrayList;
 public class Inventory {
 	private ArrayList <Item> itemList;
 	private Order myOrder;
-	
-	public Inventory (ArrayList <Item> itemList) {
-		this.itemList = itemList;
-		myOrder = new Order ();
+
+	public Inventory (ArrayList<Supplier> suppliers){
+		itemList = readItems(suppliers);
+		myOrder = new Order();
+	}
+
+	/**
+	 * populate the list of items in stock from the text file "items.txt"
+	 * @return
+	 */
+	private ArrayList<Item> readItems(ArrayList<Supplier> suppliers) {
+
+		ArrayList<Item> items = new ArrayList<Item>();
+
+		try {
+			FileReader fr = new FileReader("items.txt");
+			BufferedReader br = new BufferedReader(fr);
+
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				String[] temp = line.split(";");
+				int supplierId = Integer.parseInt(temp[4]);
+				Supplier theSupplier = null;
+
+				for (Supplier s : suppliers) {
+					if (s.getSupId() == supplierId) {
+						theSupplier = s;
+						break;
+					}
+				}
+
+				if (theSupplier != null) {
+					Item myItem = new Item(Integer.parseInt(temp[0]), temp[1], Integer.parseInt(temp[2]),
+							Double.parseDouble(temp[3]), theSupplier);
+					items.add(myItem);
+					theSupplier.getItemList().add(myItem);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("error parsing items.txt");
+			System.out.println(e.getMessage());
+		}
+		return items;
 	}
 
 	public ArrayList <Item> getItemList() {

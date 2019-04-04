@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 public class Shop {
@@ -6,9 +8,30 @@ public class Shop {
 
 	private ArrayList <Supplier> supplierList;
 	
-	public Shop (Inventory inventory, ArrayList <Supplier> suppliers) {
-		theInventory = inventory;
-		supplierList = suppliers;
+//	public Shop (Inventory inventory, ArrayList <Supplier> suppliers) {
+//		theInventory = inventory;
+//		supplierList = suppliers;
+//	}
+
+	public Shop(){
+		supplierList = new ArrayList<>();
+		readSuppliers();
+		theInventory = new Inventory(supplierList);
+	}
+
+	private void readSuppliers() {
+		try {
+			FileReader fr = new FileReader("suppliers.txt");
+			BufferedReader br = new BufferedReader(fr);
+
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				String[] temp = line.split(";");
+				supplierList.add(new Supplier(Integer.parseInt(temp[0]), temp[1], temp[2], temp[3]));
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public Inventory getTheInventory () {
