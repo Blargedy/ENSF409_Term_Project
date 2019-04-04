@@ -3,6 +3,10 @@ import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * @author Bernard Kleiner
+ */
+
 public class inventoryServer {
 	private ServerSocket serverSocket;
 	private ExecutorService threadPool;
