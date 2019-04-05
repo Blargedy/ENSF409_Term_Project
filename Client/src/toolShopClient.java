@@ -13,6 +13,7 @@ public class toolShopClient {
 	private BufferedReader stdIn;
 	private BufferedReader socketIn;
 	private ObjectInputStream objectInputStream;
+	private MainInterface mainInterface;
 
     /**
      * Creates a socket object, attempting to connect to a server running on the IP in serverName and
@@ -29,7 +30,7 @@ public class toolShopClient {
 						dataSocket.getInputStream()));
 				socketOut = new PrintWriter((dataSocket.getOutputStream()), true);
 				objectInputStream = new ObjectInputStream(dataSocket.getInputStream());
-				//objectOutputStream = new ObjectOutputStream(dataSocket.getOutputStream());
+				mainInterface = new MainInterface("Inventory", socketIn, socketOut, objectInputStream);
 				break;
 			} catch (IOException e) {
 				System.out.println("ERROR connecting to server. Trying again in 1s");
@@ -138,7 +139,7 @@ public class toolShopClient {
 
 					//////////////////////////////////////////////////////////////
 
-					case 6: //grab today's order
+					case 6: //print today's order
 						receivedOrder = receiveObjectOverSocket();
 						if(receivedOrder == null)
 							System.out.println("order not found");
