@@ -5,6 +5,7 @@ import java.io.IOException;
 public class SearchForToolListener implements ActionListener {
     private IO io;
 
+
     public SearchForToolListener(IO receivedIo){
         this.io = receivedIo;
     }
@@ -12,9 +13,8 @@ public class SearchForToolListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event){
         try {
-            //"Enter name of tool"
-            System.out.println(io.getSocketIn().readLine());
-            io.getSocketOut().println(io.getStdIn().readLine());
+            new SearchForToolInterface("Search for Tool", io);
+
             try {
                 System.out.println(io.getObjectInputStream().readObject());
             } catch (ClassNotFoundException e) {

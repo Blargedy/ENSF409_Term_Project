@@ -18,6 +18,7 @@ public class inventoryServer {
 		try {
 			serverSocket = new ServerSocket(9090);
 			threadPool = Executors.newCachedThreadPool();
+			System.out.println("Server Running");
 		} catch (IOException e) {
 		}
 	}

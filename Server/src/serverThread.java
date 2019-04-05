@@ -65,18 +65,18 @@ public class serverThread implements Runnable{
         /**
          * sends the text of the menu for the client to display
          */
-        private void printMenuChoices() {
-            socketOutput.println("Please choose from one of the following options: ");
-            socketOutput.println("1. List all tools in the inventory.");
-            socketOutput.println("2. Search for tool by tool name.");
-            socketOutput.println("3. Search for tool by tool id.");
-            socketOutput.println("4. Check item quantity.");
-            socketOutput.println("5. Decrease item quantity.");
-            socketOutput.println("6. Grab today's order");
-            socketOutput.println("7. Quit.");
-            socketOutput.println("");
-            socketOutput.println("Please enter your selection: ");
-        }
+//        private void printMenuChoices() {
+//            socketOutput.println("Please choose from one of the following options: ");
+//            socketOutput.println("1. List all tools in the inventory.");
+//            socketOutput.println("2. Search for tool by tool name.");
+//            socketOutput.println("3. Search for tool by tool id.");
+//            socketOutput.println("4. Check item quantity.");
+//            socketOutput.println("5. Decrease item quantity.");
+//            socketOutput.println("6. Grab today's order");
+//            socketOutput.println("7. Quit.");
+//            socketOutput.println("");
+//            socketOutput.println("Please enter your selection: ");
+//        }
 
         /**
          * present the user with the interactive options. Reads from console before sending

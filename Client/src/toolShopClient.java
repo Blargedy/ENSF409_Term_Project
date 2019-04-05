@@ -8,11 +8,6 @@ import java.net.Socket;
  */
 
 public class toolShopClient {
-//	private PrintWriter socketOut;
-//	private Socket dataSocket;
-//	private BufferedReader stdIn;
-//	private BufferedReader socketIn;
-//	private ObjectInputStream objectInputStream;
 	private MainInterface mainInterface;
 	public IO io;
 

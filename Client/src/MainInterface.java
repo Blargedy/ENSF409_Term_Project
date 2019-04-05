@@ -11,6 +11,8 @@ public class MainInterface extends JFrame {
         super(s);
         this.io = receivedIo;
         this.setSize(600, 400);
+        this.setAlwaysOnTop(true);
+        this.setLocation(700,700);
         this.setLayout(new GridLayout(2, 2));
         listAllTools = new JButton("List All Tools");
         listAllTools.addActionListener(new ListAllToolsListener(io));
