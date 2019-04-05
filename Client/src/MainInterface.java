@@ -1,32 +1,25 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
 
 public class MainInterface extends JFrame {
     private JButton listAllTools, searchForTool, todaysOrder, disconnect;
-    private BufferedReader socketIn;
-    private PrintWriter socketOut;
-    private ObjectInputStream objectInputStream;
+    private IO io;
 
     private static final long serialVersionUID = 9050904299246341634L;
 
-    public MainInterface(String s, BufferedReader receivedSocketIn, PrintWriter recievedPrintWriter, ObjectInputStream receivedObjectInputStream) {
+    public MainInterface(String s, IO receivedIo) {
         super(s);
+        this.io = receivedIo;
         this.setSize(600, 400);
         this.setLayout(new GridLayout(2, 2));
-        this.socketIn = receivedSocketIn;
-        this.socketOut = recievedPrintWriter;
-        this.objectInputStream = receivedObjectInputStream;
         listAllTools = new JButton("List All Tools");
-        listAllTools.addActionListener(new ListAllToolsListener(socketIn, socketOut));
+        listAllTools.addActionListener(new ListAllToolsListener(io));
         searchForTool = new JButton("Search for Tool");
-        searchForTool.addActionListener(new SearchForToolListener());
+        searchForTool.addActionListener(new SearchForToolListener(io));
         todaysOrder = new JButton("Print Today's Order");
-        todaysOrder.addActionListener(new PrintTodaysOrderListener(objectInputStream, socketOut));
+        todaysOrder.addActionListener(new PrintTodaysOrderListener(io));
         disconnect = new JButton("Disconnect");
-        disconnect.addActionListener(new DisconnectListener(socketOut));
+        disconnect.addActionListener(new DisconnectListener(io));
         add("South", listAllTools);
         add("South", searchForTool);
         add("South", todaysOrder);

@@ -88,7 +88,7 @@ public class serverThread implements Runnable{
                 Supplier tempSupplier;
                 Order tempOrder;
 
-                printMenuChoices();
+                //printMenuChoices();
 
                 try {
                     readFromSocket = socketInput.readLine();
