@@ -12,22 +12,15 @@ import java.net.Socket;
  * and continues handling client requests
  */
 public class serverThread implements Runnable{
-    private Socket aSocket;
-    private BufferedReader socketInput;
-    private PrintWriter socketOutput;
-    private ObjectOutputStream objectOutputStream;
+    private IO io;
+//    private Socket aSocket;
+//    private BufferedReader socketInput;
+//    private PrintWriter socketOutput;
+//    private ObjectOutputStream objectOutputStream;
 
     public serverThread(Socket aSocket){
-        this.aSocket = aSocket;
+        io = new IO(aSocket);
         System.out.println("New connection started");
-        try {
-            socketInput = new BufferedReader(new InputStreamReader(aSocket.getInputStream()));
-            socketOutput = new PrintWriter(aSocket.getOutputStream(), true);
-            objectOutputStream = new ObjectOutputStream(aSocket.getOutputStream());
-        } catch (IOException e) {
-            System.out.println("Unable to create input or output streams");
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -38,8 +31,8 @@ public class serverThread implements Runnable{
         FrontEnd app = new FrontEnd();
         app.menu();
         try {
-            socketInput.close();
-            socketOutput.close();
+            io.getSocketIn().close();
+            io.getSocketOut().close();
             System.out.println("Connection closed");
         } catch (IOException e) {
             System.out.println("Unable to close sockets");
@@ -63,22 +56,6 @@ public class serverThread implements Runnable{
         }
 
         /**
-         * sends the text of the menu for the client to display
-         */
-//        private void printMenuChoices() {
-//            socketOutput.println("Please choose from one of the following options: ");
-//            socketOutput.println("1. List all tools in the inventory.");
-//            socketOutput.println("2. Search for tool by tool name.");
-//            socketOutput.println("3. Search for tool by tool id.");
-//            socketOutput.println("4. Check item quantity.");
-//            socketOutput.println("5. Decrease item quantity.");
-//            socketOutput.println("6. Grab today's order");
-//            socketOutput.println("7. Quit.");
-//            socketOutput.println("");
-//            socketOutput.println("Please enter your selection: ");
-//        }
-
-        /**
          * present the user with the interactive options. Reads from console before sending
          * to server.
          */
@@ -88,10 +65,8 @@ public class serverThread implements Runnable{
                 Supplier tempSupplier;
                 Order tempOrder;
 
-                //printMenuChoices();
-
                 try {
-                    readFromSocket = socketInput.readLine();
+                    readFromSocket = io.getSocketIn().readLine();
                     menuChoice = Integer.parseInt(readFromSocket);
                 } catch (IOException e) {
                     System.out.println("couldn't read from socket");
@@ -100,17 +75,17 @@ public class serverThread implements Runnable{
 
                 switch (menuChoice) {
                     case 1: //list all tools
-                        socketOutput.println(theShop.getTheInventory().getItemList().size());
-                        socketOutput.print(theShop.listAllItems());
+                        io.getSocketOut().println(theShop.getTheInventory().getItemList().size());
+                        io.getSocketOut().print(theShop.listAllItems());
                         break;
 
                     //////////////////////////////////////////////////////////////
 
                     case 2: //search for tool by tool name
-                        socketOutput.println("Enter the name of the item to search for");
+                        io.getSocketOut().println("Enter the name of the item to search for");
                         tempItem = null;
                         try {
-                            tempItem = theShop.getItem(socketInput.readLine());
+                            tempItem = theShop.getItem(io.getSocketIn().readLine());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -120,10 +95,10 @@ public class serverThread implements Runnable{
                     //////////////////////////////////////////////////////////////
 
                     case 3: // search for tool by tool id
-                        socketOutput.println("Enter the ID of the item to search for");
+                        io.getSocketOut().println("Enter the ID of the item to search for");
                         tempItem = null;
                         try {
-                            tempItem = theShop.getItem(socketInput.readLine());
+                            tempItem = theShop.getItem(io.getSocketIn().readLine());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -133,9 +108,9 @@ public class serverThread implements Runnable{
                     //////////////////////////////////////////////////////////////
 
                     case 4: // check item quantity
-                        socketOutput.println("enter name or ID of item");
+                        io.getSocketOut().println("enter name or ID of item");
                         try {
-                            readFromSocket = socketInput.readLine();
+                            readFromSocket = io.getSocketIn().readLine();
                         } catch (IOException e) {
                             System.out.println("error reading from socket");
                             e.printStackTrace();
@@ -144,22 +119,22 @@ public class serverThread implements Runnable{
                         tempItem = theShop.getItem(readFromSocket); // try to find with name search
                         if(tempItem != null){
                             int q = tempItem.getItemQuantity();
-                            socketOutput.println("item " + tempItem.getItemName() + " has quantity " + q);
+                            io.getSocketOut().println("item " + tempItem.getItemName() + " has quantity " + q);
                         }
                         else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
                             int q = tempItem.getItemQuantity();
-                            socketOutput.println("item " + tempItem.getItemName() + " has quantity " + q);
+                            io.getSocketOut().println("item " + tempItem.getItemName() + " has quantity " + q);
                         }
                         else
-                            socketOutput.println("item not found");
+                            io.getSocketOut().println("item not found");
                         break;
 
                     //////////////////////////////////////////////////////////////
 
                     case 5: //decrease item quantity
-                        socketOutput.println("enter name or ID of item");
+                        io.getSocketOut().println("enter name or ID of item");
                         try {
-                            readFromSocket = socketInput.readLine();
+                            readFromSocket = io.getSocketIn().readLine();
                         } catch (IOException e) {
                             System.out.println("error reading from socket");
                             e.printStackTrace();
@@ -170,22 +145,22 @@ public class serverThread implements Runnable{
                             int q = tempItem.getItemQuantity();
                             if(q > 0){
                                 tempItem.setItemQuantity(q-1);
-                                socketOutput.println("new item quantity of " + tempItem.getItemName()+ " is " + (q-1));
+                                io.getSocketOut().println("new item quantity of " + tempItem.getItemName()+ " is " + (q-1));
                             }
                             else
-                                socketOutput.println("item quantity already 0");
+                                io.getSocketOut().println("item quantity already 0");
                         }
                         else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
                             int q = tempItem.getItemQuantity();
                             if(q > 0){
                                 tempItem.setItemQuantity(q - 1);
-                                socketOutput.println("new item quantity of " + tempItem.getItemName()+ " is " +(q - 1));
+                                io.getSocketOut().println("new item quantity of " + tempItem.getItemName()+ " is " +(q - 1));
                             }
                             else
-                                socketOutput.println("item quantity already 0");
+                                io.getSocketOut().println("item quantity already 0");
                             }
                         else
-                            socketOutput.println("item not found");
+                            io.getSocketOut().println("item not found");
                         break;
 
                     //////////////////////////////////////////////////////////////
@@ -197,13 +172,13 @@ public class serverThread implements Runnable{
                     //////////////////////////////////////////////////////////////
 
                     case 7: //exit
-                        socketOutput.println("\nGood Bye!");
+                        io.getSocketOut().println("\nGood Bye!");
                         return;
 
                     //////////////////////////////////////////////////////////////
 
                     default: //invalid input
-                        socketOutput.println("\nSelection out of range. Try again.");
+                        io.getSocketOut().println("\nSelection out of range. Try again.");
                         break;
                 }
             }
@@ -216,7 +191,7 @@ public class serverThread implements Runnable{
          */
         private < E > void sendObjectOverSocket(E  toBeSent){
             try {
-                objectOutputStream.writeObject(toBeSent);
+                io.getObjectOutputStream()writeObject(toBeSent);
             } catch (IOException e) {
                 System.out.println("cannot write item to output stream");
                 e.printStackTrace();

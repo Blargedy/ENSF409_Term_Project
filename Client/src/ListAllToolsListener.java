@@ -19,10 +19,10 @@ public class ListAllToolsListener implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        BufferedReader tempSocketIn = io.getSocketIn();
+        //BufferedReader tempSocketIn = io.getSocketIn();
         for(int i = 0; i < numItems; i++) {
             try {
-                System.out.println(tempSocketIn.readLine());
+                System.out.println(io.getSocketIn().readLine());
             } catch (IOException e) {
                 e.printStackTrace();
             }
