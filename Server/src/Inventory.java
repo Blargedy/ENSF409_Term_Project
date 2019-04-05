@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -7,7 +8,7 @@ import java.util.ArrayList;
  * @author Bernard Kleiner
  */
 
-public class Inventory {
+public class Inventory implements Serializable {
 	private ArrayList <Item> itemList;
 	private Order myOrder;
 

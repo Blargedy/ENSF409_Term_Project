@@ -13,6 +13,7 @@ public class toolShopClient {
 	private BufferedReader stdIn;
 	private BufferedReader socketIn;
 	private ObjectInputStream objectInputStream;
+	private ObjectOutputStream objectOutputStream;
 
     /**
      * Creates a socket object, attempting to connect to a server running on the IP in serverName and
@@ -29,6 +30,7 @@ public class toolShopClient {
 						dataSocket.getInputStream()));
 				socketOut = new PrintWriter((dataSocket.getOutputStream()), true);
 				objectInputStream = new ObjectInputStream(dataSocket.getInputStream());
+				objectOutputStream = new ObjectOutputStream(dataSocket.getOutputStream());
 				break;
 			} catch (IOException e) {
 				System.out.println("ERROR connecting to server. Trying again in 1s");
@@ -60,6 +62,9 @@ public class toolShopClient {
 		boolean running = true;
 
 		while (running) {
+			Item receivedItem;
+			Supplier receivedSupplier;
+			Order receivedOrder;
 			try {
 				// print menu options
 				for(int i = 0; i < 10; i++){
@@ -68,9 +73,18 @@ public class toolShopClient {
 				}
 
 				//send user response to server
-				line = stdIn.readLine();
+				while(true){
+					line = stdIn.readLine();
+					try{
+						menuChoice = Integer.parseInt(line);
+						break;
+					}catch (NumberFormatException e){
+						System.out.println("Bad number format. Try again:");
+						continue;
+					}
+				}
+
 				socketOut.println(line);
-				menuChoice = Integer.parseInt(line);
 
 				switch (menuChoice){
 					case 1: //list all tools
@@ -78,7 +92,7 @@ public class toolShopClient {
 					case 2: //search for tool by tool name
 						System.out.println(socketIn.readLine()); //request to enter item name
 						socketOut.println(stdIn.readLine());	//send user input
-						Item receivedItem = receiveItemOverSocket();
+						receivedItem = receiveObjectOverSocket();
 						if(receivedItem == null){
 							System.out.println("item not found");
 						}
@@ -87,14 +101,29 @@ public class toolShopClient {
 						}
 						break;
 					case 3: //search for tool by tool id
+						System.out.println(socketIn.readLine()); //request to enter item name
+						socketOut.println(stdIn.readLine());	//send user input
+						receivedItem = receiveObjectOverSocket();
+						if(receivedItem == null){
+							System.out.println("item not found");
+						}
+						else{
+							System.out.println(receivedItem); //print received object
+						}
 						break;
 					case 4: //check item quantity
 						break;
 					case 5: //decrease item quantity
+
 						break;
 					case 6: //grab today's order
+						receivedOrder = receiveObjectOverSocket();
+						if(receivedOrder == null)
+							System.out.println("order not found");
 						break;
 					case 7: //exit
+						System.out.println("goodbye");
+						running = false;
 						break;
 					default: //invalid input
 						break;
@@ -164,5 +193,14 @@ public class toolShopClient {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private < E > void sendObjectOverSocket(E  toBeSent){
+		try {
+			objectOutputStream.writeObject(toBeSent);
+		} catch (IOException e) {
+			System.out.println("cannot write item to output stream");
+			e.printStackTrace();
+		}
 	}
 }

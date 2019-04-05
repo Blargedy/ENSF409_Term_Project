@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Supplier {
+public class Supplier implements Serializable {
 	
 	private int supId;
 	private String supName;

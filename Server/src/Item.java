@@ -1,9 +1,11 @@
+import java.io.Serializable;
+
 /**
  * @author Mohammed Moshirpour
  * @author Bernard Kleiner
  */
 
-public class Item {
+public class Item implements Serializable {
 	
 	private int itemId;
 	private String itemName;

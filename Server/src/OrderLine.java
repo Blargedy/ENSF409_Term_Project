@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class OrderLine {
+public class OrderLine implements Serializable {
 	
 	private Item theItem;
 	private int orderQuantity;

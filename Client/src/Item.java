@@ -1,9 +1,11 @@
+import java.io.Serializable;
+
 /**
  * @author Mohammed Moshirpour
  * @author Bernard Kleiner
  */
 
-public class Item {
+public class Item implements Serializable {
 	
 	private int itemId;
 	private String itemName;
@@ -23,15 +25,15 @@ public class Item {
 		this.supplier = supplier;
 		this.alreadyOrdered = false;
 	}
-	
-	public boolean decreaseItemQuantity () {
-		if (itemQuantity > 0) {
-			itemQuantity--;
-		    return true;	
-		}
-		else
-			return false;
-	}
+
+//	public boolean decreaseItemQuantity () {
+//		if (itemQuantity > 0) {
+//			itemQuantity--;
+//		    return true;
+//		}
+//		else
+//			return false;
+//	}
 
 	public OrderLine placeOrder (){
 		OrderLine ol;

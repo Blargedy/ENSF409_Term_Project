@@ -1,8 +1,9 @@
+import java.io.Serializable;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Order {
+public class Order implements Serializable {
 	private Date today;
 	private int orderId;
 	private ArrayList <OrderLine> orderLines;
