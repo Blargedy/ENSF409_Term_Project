@@ -79,6 +79,14 @@ public class Inventory implements Serializable {
 			return theItem.getItemQuantity();
 	}
 
+	public int getItemQuantity (int id){
+		Item theItem = searchForItem (id);
+		if (theItem == null)
+			return -1;
+		else
+			return theItem.getItemQuantity();
+	}
+
 	public boolean deleteItem(String name) {
 		for (Item i : itemList) {
 			if (i.getItemName().equals(name)) {

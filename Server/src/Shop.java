@@ -106,4 +106,7 @@ public class Shop {
 	public int getItemQuantity(String name) {
 		return theInventory.getItemQuantity(name);
 	}
+	public int getItemQuantity(int id) {
+		return theInventory.getItemQuantity(id);
+	}
 }

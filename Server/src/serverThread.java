@@ -84,7 +84,7 @@ public class serverThread implements Runnable{
          */
         public void menu() {
             while (true) {
-                Item itemToBeSent;
+                Item tempItem;
                 Supplier supplierToBeSent;
                 Order orderToBeSent;
 
@@ -92,9 +92,7 @@ public class serverThread implements Runnable{
 
                 try {
                     readFromSocket = socketInput.readLine();
-                    System.out.println(readFromSocket);
                     menuChoice = Integer.parseInt(readFromSocket);
-                    System.out.println(menuChoice);
                 } catch (IOException e) {
                     System.out.println("couldn't read from socket");
                     e.printStackTrace();
@@ -104,38 +102,106 @@ public class serverThread implements Runnable{
                     case 1: //list all tools
                         theShop.listAllItems();
                         break;
+
+                    //////////////////////////////////////////////////////////////
+
                     case 2: //search for tool by tool name
                         socketOutput.println("Enter the name of the item to search for");
-                        itemToBeSent = null;
+                        tempItem = null;
                         try {
-                            itemToBeSent = theShop.getItem(socketInput.readLine());
+                            tempItem = theShop.getItem(socketInput.readLine());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        sendObjectOverSocket(itemToBeSent);
+                        sendObjectOverSocket(tempItem);
                         break;
+
+                    //////////////////////////////////////////////////////////////
+
                     case 3: // search for tool by tool id
                         socketOutput.println("Enter the ID of the item to search for");
-                        Item toBeSent = null;
+                        tempItem = null;
                         try {
-                            toBeSent = theShop.getItem(socketInput.readLine());
+                            tempItem = theShop.getItem(socketInput.readLine());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        sendObjectOverSocket(toBeSent);
+                        sendObjectOverSocket(tempItem);
                         break;
+
+                    //////////////////////////////////////////////////////////////
+
                     case 4: // check item quantity
-                        socketOutput.println("check item quantity placeholder");
+                        socketOutput.println("enter name or ID of item");
+                        try {
+                            readFromSocket = socketInput.readLine();
+                        } catch (IOException e) {
+                            System.out.println("error reading from socket");
+                            e.printStackTrace();
+                        }
+
+                        tempItem = theShop.getItem(readFromSocket); // try to find with name search
+                        if(tempItem != null){
+                            int q = tempItem.getItemQuantity();
+                            socketOutput.println("item " + tempItem.getItemName() + " has quantity " + q);
+                        }
+                        else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
+                            int q = tempItem.getItemQuantity();
+                            socketOutput.println("item " + tempItem.getItemName() + " has quantity " + q);
+                        }
+                        else
+                            socketOutput.println("item not found");
+
                         break;
+
+                    //////////////////////////////////////////////////////////////
+
                     case 5: //decrease item quantity
-                        socketOutput.println("decrease item quantity placeholder");
+                        socketOutput.println("enter name or ID of item");
+                        try {
+                            readFromSocket = socketInput.readLine();
+                        } catch (IOException e) {
+                            System.out.println("error reading from socket");
+                            e.printStackTrace();
+                        }
+
+                        tempItem = theShop.getItem(readFromSocket); // try to find with name search
+                        if(tempItem != null){
+                            int q = tempItem.getItemQuantity();
+                            if(q > 0){
+                                tempItem.setItemQuantity(q-1);
+                                socketOutput.println("new item quantity of " + tempItem.getItemName()+ " is " + (q-1));
+                            }
+                            else
+                                socketOutput.println("item quantity already 0");
+                        }
+                        else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
+                            int q = tempItem.getItemQuantity();
+                            if(q > 0){
+                                tempItem.setItemQuantity(q - 1);
+                                socketOutput.println("new item quantity of " + tempItem.getItemName()+ " is " +(q - 1));
+                            }
+                            else
+                                socketOutput.println("item quantity already 0");
+                            }
+                        else
+                            socketOutput.println("item not found");
                         break;
+
+                    //////////////////////////////////////////////////////////////
+
                     case 6: //grab today's order
                         sendObjectOverSocket(theShop.getTheInventory().getMyOrder());
                         break;
+
+                    //////////////////////////////////////////////////////////////
+
                     case 7: //exit
                         socketOutput.println("\nGood Bye!");
                         return;
+
+                    //////////////////////////////////////////////////////////////
+
                     default: //invalid input
                         socketOutput.println("\nSelection out of range. Try again.");
                         break;

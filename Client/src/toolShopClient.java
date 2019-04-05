@@ -13,7 +13,7 @@ public class toolShopClient {
 	private BufferedReader stdIn;
 	private BufferedReader socketIn;
 	private ObjectInputStream objectInputStream;
-	private ObjectOutputStream objectOutputStream;
+	//private ObjectOutputStream objectOutputStream;
 
     /**
      * Creates a socket object, attempting to connect to a server running on the IP in serverName and
@@ -30,7 +30,7 @@ public class toolShopClient {
 						dataSocket.getInputStream()));
 				socketOut = new PrintWriter((dataSocket.getOutputStream()), true);
 				objectInputStream = new ObjectInputStream(dataSocket.getInputStream());
-				objectOutputStream = new ObjectOutputStream(dataSocket.getOutputStream());
+				//objectOutputStream = new ObjectOutputStream(dataSocket.getOutputStream());
 				break;
 			} catch (IOException e) {
 				System.out.println("ERROR connecting to server. Trying again in 1s");
@@ -89,6 +89,9 @@ public class toolShopClient {
 				switch (menuChoice){
 					case 1: //list all tools
 						break;
+
+					//////////////////////////////////////////////////////////////
+
 					case 2: //search for tool by tool name
 						System.out.println(socketIn.readLine()); //request to enter item name
 						socketOut.println(stdIn.readLine());	//send user input
@@ -100,6 +103,9 @@ public class toolShopClient {
 							System.out.println(receivedItem); //print received object
 						}
 						break;
+
+					//////////////////////////////////////////////////////////////
+
 					case 3: //search for tool by tool id
 						System.out.println(socketIn.readLine()); //request to enter item name
 						socketOut.println(stdIn.readLine());	//send user input
@@ -111,20 +117,39 @@ public class toolShopClient {
 							System.out.println(receivedItem); //print received object
 						}
 						break;
+
+					//////////////////////////////////////////////////////////////
+
 					case 4: //check item quantity
 						break;
-					case 5: //decrease item quantity
 
+					//////////////////////////////////////////////////////////////
+
+					case 5: //decrease item quantity
+						System.out.println(socketIn.readLine()); //"enter name or ID of item"
+						socketOut.println(stdIn.readLine()); //send user response
+						System.out.println(socketIn.readLine()); //print server response
 						break;
+
+					//////////////////////////////////////////////////////////////
+
 					case 6: //grab today's order
 						receivedOrder = receiveObjectOverSocket();
 						if(receivedOrder == null)
 							System.out.println("order not found");
+						else
+							System.out.println(receivedOrder);
 						break;
+
+					//////////////////////////////////////////////////////////////
+
 					case 7: //exit
 						System.out.println("goodbye");
 						running = false;
 						break;
+
+					//////////////////////////////////////////////////////////////
+
 					default: //invalid input
 						break;
 				}
@@ -156,51 +181,12 @@ public class toolShopClient {
 		return null;
 	}
 
-	public Item receiveItemOverSocket(){
-		try {
-			return (Item) objectInputStream.readObject();
-		} catch (IOException e) {
-			System.out.println("error with IO during item read");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println("error finding class during Item read");
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public Order receiveOrderOverSocket(){
-		try {
-			return (Order) objectInputStream.readObject();
-		} catch (IOException e) {
-			System.out.println("error with IO during Order read");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println("error finding class during Order read");
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public Supplier receiveSupplierOverSocket(){
-		try {
-			return (Supplier) objectInputStream.readObject();
-		} catch (IOException e) {
-			System.out.println("error with IO during Supplier read");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println("error finding class during Supplier read");
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private < E > void sendObjectOverSocket(E  toBeSent){
-		try {
-			objectOutputStream.writeObject(toBeSent);
-		} catch (IOException e) {
-			System.out.println("cannot write item to output stream");
-			e.printStackTrace();
-		}
-	}
+//	private < E > void sendObjectOverSocket(E  toBeSent){
+//		try {
+//			objectOutputStream.writeObject(toBeSent);
+//		} catch (IOException e) {
+//			System.out.println("cannot write item to output stream");
+//			e.printStackTrace();
+//		}
+//	}
 }
