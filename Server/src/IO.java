@@ -9,7 +9,7 @@ public class IO {
     public IO(Socket receivedSocket){
         while(true){
             try {
-                socketIn = new BufferedReader(new InputStreamReader(receivedSocket.getInputStream()))
+                socketIn = new BufferedReader(new InputStreamReader(receivedSocket.getInputStream()));
                 socketOut = new PrintWriter(receivedSocket.getOutputStream(), true);
                 objectOutputStream = new ObjectOutputStream(receivedSocket.getOutputStream());
                 break;
@@ -28,7 +28,7 @@ public class IO {
         return socketIn;
     }
 
-    public synchronized ObjectInputStream getObjectOutputStream() {
+    public synchronized ObjectOutputStream getObjectOutputStream() {
         return objectOutputStream;
     }
 }

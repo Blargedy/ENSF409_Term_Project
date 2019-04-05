@@ -13,10 +13,6 @@ import java.net.Socket;
  */
 public class serverThread implements Runnable{
     private IO io;
-//    private Socket aSocket;
-//    private BufferedReader socketInput;
-//    private PrintWriter socketOutput;
-//    private ObjectOutputStream objectOutputStream;
 
     public serverThread(Socket aSocket){
         io = new IO(aSocket);
@@ -191,7 +187,7 @@ public class serverThread implements Runnable{
          */
         private < E > void sendObjectOverSocket(E  toBeSent){
             try {
-                io.getObjectOutputStream()writeObject(toBeSent);
+                io.getObjectOutputStream().writeObject(toBeSent);
             } catch (IOException e) {
                 System.out.println("cannot write item to output stream");
                 e.printStackTrace();
