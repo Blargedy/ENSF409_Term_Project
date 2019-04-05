@@ -85,8 +85,8 @@ public class serverThread implements Runnable{
         public void menu() {
             while (true) {
                 Item tempItem;
-                Supplier supplierToBeSent;
-                Order orderToBeSent;
+                Supplier tempSupplier;
+                Order tempOrder;
 
                 printMenuChoices();
 
@@ -100,7 +100,8 @@ public class serverThread implements Runnable{
 
                 switch (menuChoice) {
                     case 1: //list all tools
-                        theShop.listAllItems();
+                        socketOutput.println(theShop.getTheInventory().getItemList().size());
+                        socketOutput.print(theShop.listAllItems());
                         break;
 
                     //////////////////////////////////////////////////////////////
@@ -151,7 +152,6 @@ public class serverThread implements Runnable{
                         }
                         else
                             socketOutput.println("item not found");
-
                         break;
 
                     //////////////////////////////////////////////////////////////

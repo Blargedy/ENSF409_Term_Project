@@ -13,7 +13,6 @@ public class toolShopClient {
 	private BufferedReader stdIn;
 	private BufferedReader socketIn;
 	private ObjectInputStream objectInputStream;
-	//private ObjectOutputStream objectOutputStream;
 
     /**
      * Creates a socket object, attempting to connect to a server running on the IP in serverName and
@@ -88,6 +87,9 @@ public class toolShopClient {
 
 				switch (menuChoice){
 					case 1: //list all tools
+						int numItems = Integer.parseInt(socketIn.readLine());
+						for(int i = 0; i < numItems; i++)
+							System.out.println(socketIn.readLine());
 						break;
 
 					//////////////////////////////////////////////////////////////
@@ -121,6 +123,9 @@ public class toolShopClient {
 					//////////////////////////////////////////////////////////////
 
 					case 4: //check item quantity
+						System.out.println(socketIn.readLine()); //"enter name or ID of item"
+						socketOut.println(stdIn.readLine()); //send user response
+						System.out.println(socketIn.readLine()); //print server response
 						break;
 
 					//////////////////////////////////////////////////////////////
@@ -180,13 +185,4 @@ public class toolShopClient {
 		}
 		return null;
 	}
-
-//	private < E > void sendObjectOverSocket(E  toBeSent){
-//		try {
-//			objectOutputStream.writeObject(toBeSent);
-//		} catch (IOException e) {
-//			System.out.println("cannot write item to output stream");
-//			e.printStackTrace();
-//		}
-//	}
 }
