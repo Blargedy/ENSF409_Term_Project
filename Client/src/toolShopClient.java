@@ -31,7 +31,6 @@ public class toolShopClient {
      */
 	public static void main(String[] args) throws IOException  {
 		toolShopClient aClient = new toolShopClient("localhost", 9090);
-		//aClient.communicate();
 	}
 
 	/**

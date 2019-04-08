@@ -78,7 +78,6 @@ public class serverThread implements Runnable{
                     //////////////////////////////////////////////////////////////
 
                     case 2: //search for tool by tool name
-                        //io.getSocketOut().println("Enter the name of the item to search for");
                         tempItem = null;
                         try {
                             tempItem = theShop.getItem(io.getSocketIn().readLine());
@@ -91,7 +90,6 @@ public class serverThread implements Runnable{
                     //////////////////////////////////////////////////////////////
 
                     case 3: // search for tool by tool id
-                        //io.getSocketOut().println("Enter the ID of the item to search for");
                         tempItem = null;
                         String line;
                         try {
