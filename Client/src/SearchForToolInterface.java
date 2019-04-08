@@ -2,9 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SearchForToolInterface extends JFrame {
-    private JFrame frame;
-    private JPanel panel;
-    private JButton OK, Cancel;
+    private final JTextField textfield2;
+    private JTextField textfield1;
+    private JButton byName, byId;
     private IO io;
 
     private static final long serialVersionUID = 034L;
@@ -12,21 +12,24 @@ public class SearchForToolInterface extends JFrame {
     public SearchForToolInterface(String s, IO receivedIo){
         super(s);
         this.io = receivedIo;
-        panel = new JPanel();
-        panel.setSize(200,200);
-        this.add(panel);
+
         this.setSize(600,300);
         this.setAlwaysOnTop(true);
-        this.setLayout(new GridLayout(2,1));
-        this.setLocation(600,0);
-        this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setLayout(new GridLayout(2, 2));
 
-        OK = new JButton("OK");
-        OK.addActionListener(new SearchToolByNameListener(io));
-        Cancel = new JButton("Cancel");
-        Cancel.addActionListener(new CloseWIndowListener(this));
-        panel.add("North", OK);
-        panel.add("South", Cancel);
-        panel.setVisible(true);
+        textfield1 = new JTextField("Enter Name Here ",10);
+        textfield2 = new JTextField("Enter ID Here ",10);
+
+        byName = new JButton("Search By Name");
+        byName.addActionListener(new SearchForToolByNameListener(io, textfield1));
+        byId = new JButton("Search By ID");
+        byId.addActionListener(new SearchForToolByIdListener(io, textfield2));
+
+        this.add("North", byName);
+        this.add("South", byId);
+        this.add(textfield1);
+        this.add(textfield2);
+        this.setVisible(true);
     }
 }

@@ -15,16 +15,6 @@ public class SearchForToolListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event){
-        try {
-            new SearchForToolInterface("Search for Tool", io);
-
-            try {
-                System.out.println(io.getObjectInputStream().readObject());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new SearchForToolInterface("Search for Tool", io);
     }
 }
