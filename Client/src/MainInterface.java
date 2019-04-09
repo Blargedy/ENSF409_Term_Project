@@ -1,3 +1,4 @@
+import javax.print.DocFlavor;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
@@ -13,7 +14,7 @@ import java.io.IOException;
  */
 
 public class MainInterface extends JFrame {
-    private JButton listAllTools, searchByName, searchById, todaysOrder, disconnect;
+    private JButton listAllTools, searchForTool, todaysOrder, disconnect, adjustQuantity, searchOk;
     private IO io;
     private Border panelEdge = BorderFactory.createEtchedBorder();
     private DefaultListModel<String> listModel;
@@ -26,7 +27,7 @@ public class MainInterface extends JFrame {
     public MainInterface(String s, IO receivedIo) {
         super(s);
         this.io = receivedIo;
-        this.setSize(600, 400);
+        this.setSize(800, 400);
         this.setAlwaysOnTop(true);
         this.setLocation(700,700);
         this.setTitle("Inventory Client");
@@ -34,6 +35,7 @@ public class MainInterface extends JFrame {
         this.add(createLowerPanel(), BorderLayout.SOUTH);
         this.add(createCenterPanel(), BorderLayout.CENTER);
         this.add(createUpperPanel(), BorderLayout.NORTH);
+        this.add(createRightPanel(), BorderLayout.EAST);
 
 //        listAllTools = new JButton("List All Tools");
 //        listAllTools.addActionListener(new ListAllToolsListener(io));
@@ -63,24 +65,37 @@ public class MainInterface extends JFrame {
         listArea.setVisibleRowCount(15);
         listArea.addListSelectionListener(new ListListener());
         listScrollPane = new JScrollPane(listArea);
-        listModel.addElement("Initial Value");
+//        listModel.addElement("Initial Value");
         centerPanel.add(listScrollPane);
         return centerPanel;
     }
 
     private JPanel createLowerPanel() {
         JPanel lowerPanel = new JPanel();
-        userInputTextField = new JTextField(10);
-        lowerPanel.add(userInputTextField);
-        searchByName = new JButton("Search By Name");
-        searchByName.addActionListener(new SearchForToolByNameListener(io, userInputTextField));
-        lowerPanel.add(searchByName);
-        searchById = new JButton("Search By ID");
-        searchById.addActionListener(new SearchForToolByIdListener(io, userInputTextField));
-        lowerPanel.add(searchById);
-        listAllTools = new JButton("Load From File");
+
+//        userInputTextField = new JTextField(10);
+//        lowerPanel.add(userInputTextField);
+
+        adjustQuantity = new JButton("Decrease Quantity");
+        adjustQuantity.addActionListener(new AdjustQuantityListener(io));
+        lowerPanel.add(adjustQuantity);
+
+        todaysOrder = new JButton("Print Order");
+        todaysOrder.addActionListener(new PrintTodaysOrderListener(io));
+        lowerPanel.add(todaysOrder);
+
+//        searchForTool = new JButton("Search");
+//        searchForTool.addActionListener(new SearchForToolListener(io));
+//        lowerPanel.add(searchForTool);
+
+        listAllTools = new JButton("List All");
         listAllTools.addActionListener(new ListAllToolsListener(io));
         lowerPanel.add(listAllTools);
+
+
+        disconnect = new JButton("Disconnect");
+        disconnect.addActionListener(new DisconnectListener(io));
+        lowerPanel.add(disconnect);
         return lowerPanel;
     }
 
@@ -93,6 +108,20 @@ public class MainInterface extends JFrame {
         upperPanel.add(label);
         upperPanel.add(selectedTextField);
         return upperPanel;
+    }
+
+    private JPanel createRightPanel(){
+        JPanel rightPanel = new JPanel();
+        JLabel label = new JLabel("Search for Item");
+        userInputTextField = new JTextField(10);
+
+        searchOk = new JButton("OK");
+        searchOk.addActionListener(new SearchForToolListener(io, userInputTextField));
+
+        rightPanel.add(label);
+        rightPanel.add(userInputTextField);
+        rightPanel.add(searchOk);
+        return rightPanel;
     }
 
     public class ListListener implements ListSelectionListener {
@@ -120,29 +149,16 @@ public class MainInterface extends JFrame {
 
     public class SearchForToolListener implements ActionListener {
         private IO io;
-        public JFrame frame;
-
-        public SearchForToolListener(IO receivedIo){
-            this.io = receivedIo;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent event){
-            new SearchForToolInterface("Search for Tool", io);
-        }
-    }
-
-    public class SearchForToolByIdListener implements ActionListener {
-        private IO io;
         private JTextField textField;
 
-        public SearchForToolByIdListener(IO receivedIo, JTextField textField){
-            this.textField = textField;
+        public SearchForToolListener(IO receivedIo, JTextField textField){
             this.io = receivedIo;
+            this.textField = textField;
         }
+
         @Override
         public void actionPerformed(ActionEvent event){
-            io.getSocketOut().println("3");
+            io.getSocketOut().println("2");
             io.getSocketOut().println(textField.getText());
             try {
                 System.out.print(io.getObjectInputStream().readObject());
@@ -154,26 +170,16 @@ public class MainInterface extends JFrame {
         }
     }
 
-    public class SearchForToolByNameListener implements ActionListener {
-        private IO io;
-        private JTextField textField;
+    public class AdjustQuantityListener implements ActionListener{
+        IO io;
 
-        public SearchForToolByNameListener(IO receivedIo, JTextField textField) {
+        AdjustQuantityListener(IO receivedIo){
             this.io = receivedIo;
-            this.textField = textField;
         }
 
         @Override
-        public void actionPerformed(ActionEvent event) {
-            io.getSocketOut().println("2");
-            io.getSocketOut().println(textField.getText());
-            try {
-                System.out.println(io.getObjectInputStream().readObject());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        public void actionPerformed(ActionEvent e) {
+            return;
         }
     }
 
@@ -237,31 +243,6 @@ public class MainInterface extends JFrame {
         }
     }
 
-//    public class ButtonListener implements ActionListener {
-//        public void actionPerformed(ActionEvent e) {
-//            if (e.getSource() == searchByName) {
-//                String text = userInputTextField.getText();
-//                if(text.length()>0)
-//                    listModel.addElement(text);
-//            }
-//            else if(e.getSource() == listAllTools){
-//                File file = new File("my_input.txt");
-//                try {
-//                    Scanner inputFile = new Scanner(file);
-//                    while(inputFile.hasNextLine()){
-//                        listModel.addElement(inputFile.nextLine());
-//                    }
-//                } catch (FileNotFoundException e1) {
-//                    System.out.println(e1.getMessage());
-//                }
-//            }
-//            else if(e.getSource() == searchById){
-//                listModel.removeAllElements();
-//
-//            }
-//        }
-//    }
-
     public class SearchForToolInterface extends JFrame {
         private final JTextField textfield2;
         private JTextField textfield1;
@@ -282,10 +263,10 @@ public class MainInterface extends JFrame {
             textfield1 = new JTextField("Enter Name Here ",10);
             textfield2 = new JTextField("Enter ID Here ",10);
 
-            byName = new JButton("Search By Name");
-            byName.addActionListener(new SearchForToolByNameListener(io, textfield1));
-            byId = new JButton("Search By ID");
-            byId.addActionListener(new SearchForToolByIdListener(io, textfield2));
+//            byName = new JButton("Search By Name");
+//            byName.addActionListener(new SearchForToolByNameListener(io, textfield1));
+//            byId = new JButton("Search By ID");
+//            byId.addActionListener(new SearchForToolByIdListener(io, textfield2));
 
             this.add("North", byName);
             this.add("South", byId);
@@ -294,6 +275,8 @@ public class MainInterface extends JFrame {
             this.setVisible(true);
         }
     }
+
+
 
     public void activate(){
         this.setVisible(true);

@@ -77,34 +77,30 @@ public class serverThread implements Runnable{
 
                     //////////////////////////////////////////////////////////////
 
-                    case 2: //search for tool by tool name
-                        tempItem = null;
+                    case 2: //search for tool (by name and by id (2,3) collapsed into one)
                         try {
-                            tempItem = theShop.getItem(io.getSocketIn().readLine());
+                            readFromSocket = io.getSocketIn().readLine();
                         } catch (IOException e) {
+                            System.out.println("error reading from socket");
                             e.printStackTrace();
                         }
-                        sendObjectOverSocket(tempItem);
-                        break;
-
-                    //////////////////////////////////////////////////////////////
-
-                    case 3: // search for tool by tool id
-                        tempItem = null;
-                        String line;
-                        try {
-                            tempItem = theShop.getItem(Integer.parseInt(line = io.getSocketIn().readLine()));
-                            System.out.println(line);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        //try first assuming input is name
+                        tempItem = theShop.getItem(readFromSocket);
+                        if(tempItem != null){
+                            sendObjectOverSocket(tempItem);
                         }
-                        sendObjectOverSocket(tempItem);
+
+                        else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
+                            sendObjectOverSocket(tempItem);
+                        }
+
+                        else
+                            sendObjectOverSocket(null);
                         break;
 
                     //////////////////////////////////////////////////////////////
 
                     case 4: // check item quantity
-                        io.getSocketOut().println("enter name or ID of item");
                         try {
                             readFromSocket = io.getSocketIn().readLine();
                         } catch (IOException e) {
