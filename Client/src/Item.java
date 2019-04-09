@@ -26,15 +26,6 @@ public class Item implements Serializable {
 		this.alreadyOrdered = false;
 	}
 
-//	public boolean decreaseItemQuantity () {
-//		if (itemQuantity > 0) {
-//			itemQuantity--;
-//		    return true;
-//		}
-//		else
-//			return false;
-//	}
-
 	public OrderLine placeOrder (){
 		OrderLine ol;
 		if (getItemQuantity() < MINIMUM_NUMBER && alreadyOrdered == false){
