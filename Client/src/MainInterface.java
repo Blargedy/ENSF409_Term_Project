@@ -5,10 +5,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  * @author Mohammed Moshirpour
@@ -16,7 +13,7 @@ import java.util.Scanner;
  */
 
 public class MainInterface extends JFrame {
-    private JButton listAllTools, searchForTool, todaysOrder, disconnect, getUserInput, load, clear;
+    private JButton listAllTools, searchByName, searchById, todaysOrder, disconnect;
     private IO io;
     private Border panelEdge = BorderFactory.createEtchedBorder();
     private DefaultListModel<String> listModel;
@@ -40,14 +37,14 @@ public class MainInterface extends JFrame {
 
 //        listAllTools = new JButton("List All Tools");
 //        listAllTools.addActionListener(new ListAllToolsListener(io));
-//        searchForTool = new JButton("Search for Tool");
-//        searchForTool.addActionListener(new SearchForToolListener(io));
+//        searchByName = new JButton("Search for Tool");
+//        searchByName.addActionListener(new SearchForToolListener(io));
 //        todaysOrder = new JButton("Print Today's Order");
 //        todaysOrder.addActionListener(new PrintTodaysOrderListener(io));
 //        disconnect = new JButton("Disconnect");
 //        disconnect.addActionListener(new DisconnectListener(io));
 //        add("South", listAllTools);
-//        add("South", searchForTool);
+//        add("South", searchByName);
 //        add("South", todaysOrder);
 //        add("South", disconnect);
 
@@ -75,15 +72,15 @@ public class MainInterface extends JFrame {
         JPanel lowerPanel = new JPanel();
         userInputTextField = new JTextField(10);
         lowerPanel.add(userInputTextField);
-        getUserInput = new JButton("Add Value");
-        getUserInput.addActionListener(new ButtonListener());
-        lowerPanel.add(getUserInput);
-        clear = new JButton("ClearList");
-        clear.addActionListener(new ButtonListener());
-        lowerPanel.add(clear);
-        load = new JButton("Load From File");
-        load.addActionListener(new ButtonListener());
-        lowerPanel.add(load);
+        searchByName = new JButton("Search By Name");
+        searchByName.addActionListener(new SearchForToolByNameListener(io, userInputTextField));
+        lowerPanel.add(searchByName);
+        searchById = new JButton("Search By ID");
+        searchById.addActionListener(new SearchForToolByIdListener(io, userInputTextField));
+        lowerPanel.add(searchById);
+        listAllTools = new JButton("Load From File");
+        listAllTools.addActionListener(new ListAllToolsListener(io));
+        lowerPanel.add(listAllTools);
         return lowerPanel;
     }
 
@@ -240,30 +237,30 @@ public class MainInterface extends JFrame {
         }
     }
 
-    public class ButtonListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == getUserInput) {
-                String text = userInputTextField.getText();
-                if(text.length()>0)
-                    listModel.addElement(text);
-            }
-            else if(e.getSource() == load){
-                File file = new File("my_input.txt");
-                try {
-                    Scanner inputFile = new Scanner(file);
-                    while(inputFile.hasNextLine()){
-                        listModel.addElement(inputFile.nextLine());
-                    }
-                } catch (FileNotFoundException e1) {
-                    System.out.println(e1.getMessage());
-                }
-            }
-            else if(e.getSource() == clear){
-                listModel.removeAllElements();
-
-            }
-        }
-    }
+//    public class ButtonListener implements ActionListener {
+//        public void actionPerformed(ActionEvent e) {
+//            if (e.getSource() == searchByName) {
+//                String text = userInputTextField.getText();
+//                if(text.length()>0)
+//                    listModel.addElement(text);
+//            }
+//            else if(e.getSource() == listAllTools){
+//                File file = new File("my_input.txt");
+//                try {
+//                    Scanner inputFile = new Scanner(file);
+//                    while(inputFile.hasNextLine()){
+//                        listModel.addElement(inputFile.nextLine());
+//                    }
+//                } catch (FileNotFoundException e1) {
+//                    System.out.println(e1.getMessage());
+//                }
+//            }
+//            else if(e.getSource() == searchById){
+//                listModel.removeAllElements();
+//
+//            }
+//        }
+//    }
 
     public class SearchForToolInterface extends JFrame {
         private final JTextField textfield2;
