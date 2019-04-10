@@ -10,11 +10,11 @@ import java.util.ArrayList;
 
 public class Inventory implements Serializable {
 	private ArrayList <Item> itemList;
-	private Order myOrder;
+	private Order order;
 
 	public Inventory (ArrayList<Supplier> suppliers){
 		itemList = readItems(suppliers);
-		myOrder = new Order();
+		order = new Order();
 	}
 
 	/**
@@ -67,24 +67,26 @@ public class Inventory implements Serializable {
 	public void placeOrder (Item theItem){
 		OrderLine ol = theItem.placeOrder();
 		if (ol !=null){
-			myOrder.addOrderLine(ol);
+			order.addOrderLine(ol);
 		}
 	}
 
 	public int getItemQuantity (String name){
-		Item theItem = searchForItem (name);
-		if (theItem == null)
+		Item item = searchForItem (name);
+		if (item == null)
 			return -1;
-		else
-			return theItem.getItemQuantity();
+		else {
+			return item.getItemQuantity();
+		}
 	}
 
 	public int getItemQuantity (int id){
-		Item theItem = searchForItem (id);
-		if (theItem == null)
+		Item item = searchForItem (id);
+		if (item == null)
 			return -1;
-		else
-			return theItem.getItemQuantity();
+		else {
+			return item.getItemQuantity();
+		}
 	}
 
 	public boolean deleteItem(String name) {
@@ -117,22 +119,33 @@ public class Inventory implements Serializable {
 
 	public Item searchForItem (String name) {
 		for (Item i: itemList) {
-			if (i.getItemName().equals(name))
+			if (i.getItemName().equals(name)) {
 				return i;
+			}
 		}
 		return null;
 	}
 
 	public Item searchForItem(int id) {
 		for (Item i: itemList) {
-			if (i.getItemId() == id)
+			if (i.getItemId() == id) {
 				return i;
+			}
 		}
 		return null;
 	}
 
-	public Order getMyOrder() {
-		return myOrder;
+	public Order getOrder() {
+		return order;
+	}
+
+	public boolean checkIfOrderIsNeeded(Item item){
+		OrderLine orderLine = item.placeOrder();
+		if(orderLine != null){
+			order.addOrderLine(orderLine);
+			return true;
+		}
+		return false;
 	}
 
 	public String toString () {

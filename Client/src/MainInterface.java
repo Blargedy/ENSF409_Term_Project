@@ -1,4 +1,3 @@
-import javax.print.DocFlavor;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
@@ -7,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InvalidClassException;
 
 /**
  * @author Mohammed Moshirpour
@@ -14,13 +14,13 @@ import java.io.IOException;
  */
 
 public class MainInterface extends JFrame {
-    private JButton listAllTools, searchForTool, todaysOrder, disconnect, adjustQuantity, searchOk;
+    private JButton listAllTools, checkQuantityOK, todaysOrder, disconnect, lowerQuantityOK, searchOk;
     private IO io;
     private Border panelEdge = BorderFactory.createEtchedBorder();
     private DefaultListModel<String> listModel;
     private JList<String> listArea;
     private JScrollPane listScrollPane;
-    private JTextField selectedTextField, userInputTextField;
+    private JTextField checkQuantityTextField, searchToolUserInputTextField, lowerQuantityUserInputTextField;
 
     private static final long serialVersionUID = 9050904299246341634L;
 
@@ -36,6 +36,7 @@ public class MainInterface extends JFrame {
         this.add(createCenterPanel(), BorderLayout.CENTER);
         this.add(createUpperPanel(), BorderLayout.NORTH);
         this.add(createRightPanel(), BorderLayout.EAST);
+        this.add(createLeftPanel(), BorderLayout.WEST);
 
 //        listAllTools = new JButton("List All Tools");
 //        listAllTools.addActionListener(new ListAllToolsListener(io));
@@ -73,20 +74,9 @@ public class MainInterface extends JFrame {
     private JPanel createLowerPanel() {
         JPanel lowerPanel = new JPanel();
 
-//        userInputTextField = new JTextField(10);
-//        lowerPanel.add(userInputTextField);
-
-        adjustQuantity = new JButton("Decrease Quantity");
-        adjustQuantity.addActionListener(new AdjustQuantityListener(io));
-        lowerPanel.add(adjustQuantity);
-
         todaysOrder = new JButton("Print Order");
         todaysOrder.addActionListener(new PrintTodaysOrderListener(io));
         lowerPanel.add(todaysOrder);
-
-//        searchForTool = new JButton("Search");
-//        searchForTool.addActionListener(new SearchForToolListener(io));
-//        lowerPanel.add(searchForTool);
 
         listAllTools = new JButton("List All");
         listAllTools.addActionListener(new ListAllToolsListener(io));
@@ -101,27 +91,46 @@ public class MainInterface extends JFrame {
 
     private JPanel createUpperPanel() {
         JPanel upperPanel = new JPanel();
-        upperPanel.setBackground(new Color(100, 100, 100));
-        JLabel label = new JLabel("Selected Value:");
-        selectedTextField = new JTextField(20);
+        upperPanel.setBackground(new Color(200, 200, 200));
 
-        upperPanel.add(label);
-        upperPanel.add(selectedTextField);
+        JLabel OkLabel = new JLabel("Check Quantity of Item");
+        checkQuantityTextField = new JTextField(10);
+        checkQuantityOK = new JButton("OK");
+        checkQuantityOK.addActionListener(new CheckQuantityListener(io, checkQuantityTextField));
+
+        upperPanel.add(OkLabel);
+        upperPanel.add(checkQuantityTextField);
+        upperPanel.add(checkQuantityOK);
         return upperPanel;
     }
 
     private JPanel createRightPanel(){
         JPanel rightPanel = new JPanel();
-        JLabel label = new JLabel("Search for Item");
-        userInputTextField = new JTextField(10);
 
+        JLabel OkLabel = new JLabel("Search for Item");
+        searchToolUserInputTextField = new JTextField(10);
         searchOk = new JButton("OK");
-        searchOk.addActionListener(new SearchForToolListener(io, userInputTextField));
+        searchOk.addActionListener(new SearchForToolListener(io, searchToolUserInputTextField));
 
-        rightPanel.add(label);
-        rightPanel.add(userInputTextField);
+        rightPanel.add(OkLabel);
+        rightPanel.add(searchToolUserInputTextField);
         rightPanel.add(searchOk);
+
         return rightPanel;
+    }
+
+    private JPanel createLeftPanel(){
+        JPanel leftPanel = new JPanel();
+
+        JLabel quantityLabel = new JLabel("Lower Quantity");
+        lowerQuantityUserInputTextField = new JTextField(10);
+        lowerQuantityOK = new JButton("OK");
+        lowerQuantityOK.addActionListener(new LowerQuantityListener(io, lowerQuantityUserInputTextField));
+
+        leftPanel.add(quantityLabel);
+        leftPanel.add(lowerQuantityUserInputTextField);
+        leftPanel.add(lowerQuantityOK);
+        return leftPanel;
     }
 
     public class ListListener implements ListSelectionListener {
@@ -129,7 +138,7 @@ public class MainInterface extends JFrame {
             int index = listArea.getSelectedIndex();
             if (index >= 0) {
                 String line = (String) listModel.get(index);
-                selectedTextField.setText(line);
+                checkQuantityTextField.setText(line);
             }
         }
     }
@@ -161,25 +170,65 @@ public class MainInterface extends JFrame {
             io.getSocketOut().println("2");
             io.getSocketOut().println(textField.getText());
             try {
-                System.out.print(io.getObjectInputStream().readObject());
+                Item tempItem = (Item) io.getObjectInputStream().readObject();
+                if(tempItem == null)
+                    System.out.println("Item not found");
+                else
+                    System.out.println(tempItem);
             } catch (IOException e) {
+                System.out.println("IO exception in search");
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
+                System.out.println("class not found in search");
                 e.printStackTrace();
             }
         }
     }
 
-    public class AdjustQuantityListener implements ActionListener{
-        IO io;
+    public class CheckQuantityListener implements ActionListener{
+        private IO io;
+        private JTextField textField;
 
-        AdjustQuantityListener(IO receivedIo){
+        public CheckQuantityListener(IO receivedIo, JTextField textField){
             this.io = receivedIo;
+            this.textField = textField;
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            return;
+        public void actionPerformed(ActionEvent event) {
+            io.getSocketOut().println("4");
+            io.getSocketOut().println(textField.getText());
+            try {
+                System.out.println(io.getSocketIn().readLine());
+            } catch (IOException e) {
+                System.out.println("IO exception in lower quantity");
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+    public class LowerQuantityListener implements ActionListener{
+        private IO io;
+        private JTextField textField;
+
+        public LowerQuantityListener(IO receivedIo, JTextField textField){
+            this.io = receivedIo;
+            this.textField = textField;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            io.getSocketOut().println("5");
+            io.getSocketOut().println(textField.getText());
+            try {
+                System.out.println(io.getSocketIn().readLine());
+            } catch (IOException e) {
+                System.out.println("IO exception in lower quantity");
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -221,7 +270,7 @@ public class MainInterface extends JFrame {
         public void actionPerformed(ActionEvent event){
             io.getSocketOut().println("6");
             try {
-                System.out.println(io.getObjectInputStream().readObject());
+                System.out.println((Order) io.getObjectInputStream().readObject());
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -275,8 +324,6 @@ public class MainInterface extends JFrame {
             this.setVisible(true);
         }
     }
-
-
 
     public void activate(){
         this.setVisible(true);

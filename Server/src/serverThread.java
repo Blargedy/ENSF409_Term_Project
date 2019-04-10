@@ -84,18 +84,21 @@ public class serverThread implements Runnable{
                             System.out.println("error reading from socket");
                             e.printStackTrace();
                         }
-                        //try first assuming input is name
-                        tempItem = theShop.getItem(readFromSocket);
-                        if(tempItem != null){
-                            sendObjectOverSocket(tempItem);
-                        }
+                        try {
+                            //try first assuming input is name
+                            tempItem = theShop.getItem(readFromSocket);
+                            if (tempItem != null) {
+                                sendObjectOverSocket(tempItem);
+                            }
 
-                        else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
-                            sendObjectOverSocket(tempItem);
-                        }
-
-                        else
+                            //then try as an int ID
+                            else if ((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null) {
+                                sendObjectOverSocket(tempItem);
+                            } else
+                                sendObjectOverSocket(null);
+                        } catch(NumberFormatException e){
                             sendObjectOverSocket(null);
+                    }
                         break;
 
                     //////////////////////////////////////////////////////////////
@@ -107,34 +110,38 @@ public class serverThread implements Runnable{
                             System.out.println("error reading from socket");
                             e.printStackTrace();
                         }
-
-                        tempItem = theShop.getItem(readFromSocket); // try to find with name search
-                        if(tempItem != null){
-                            int q = tempItem.getItemQuantity();
-                            io.getSocketOut().println("item " + tempItem.getItemName() + " has quantity " + q);
+                        try {
+                            tempItem = theShop.getItem(readFromSocket); // try to find with name search
+                            if (tempItem != null) {
+                                int q = tempItem.getItemQuantity();
+                                theShop.getTheInventory().checkIfOrderIsNeeded(tempItem);
+                                io.getSocketOut().println("Item " + tempItem.getItemName() + " has quantity " + q);
+                            } else if ((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null) {
+                                int q = tempItem.getItemQuantity();
+                                theShop.getTheInventory().checkIfOrderIsNeeded(tempItem);
+                                io.getSocketOut().println("Item " + tempItem.getItemName() + " has quantity " + q);
+                            }
+                            else
+                                io.getSocketOut().println("Item not found");
+                        } catch (NumberFormatException e){
+                            io.getSocketOut().println("Item not found");
                         }
-                        else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
-                            int q = tempItem.getItemQuantity();
-                            io.getSocketOut().println("item " + tempItem.getItemName() + " has quantity " + q);
-                        }
-                        else
-                            io.getSocketOut().println("item not found");
                         break;
 
                     //////////////////////////////////////////////////////////////
 
                     case 5: //decrease item quantity
-                        io.getSocketOut().println("enter name or ID of item");
                         try {
                             readFromSocket = io.getSocketIn().readLine();
                         } catch (IOException e) {
                             System.out.println("error reading from socket");
                             e.printStackTrace();
                         }
-
+                        try {
                         tempItem = theShop.getItem(readFromSocket); // try to find with name search
                         if(tempItem != null){
                             int q = tempItem.getItemQuantity();
+                            theShop.getTheInventory().checkIfOrderIsNeeded(tempItem);
                             if(q > 0){
                                 tempItem.setItemQuantity(q-1);
                                 io.getSocketOut().println("new item quantity of " + tempItem.getItemName()+ " is " + (q-1));
@@ -142,23 +149,25 @@ public class serverThread implements Runnable{
                             else
                                 io.getSocketOut().println("item quantity already 0");
                         }
-                        else if((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null){
-                            int q = tempItem.getItemQuantity();
-                            if(q > 0){
-                                tempItem.setItemQuantity(q - 1);
-                                io.getSocketOut().println("new item quantity of " + tempItem.getItemName()+ " is " +(q - 1));
+                        else if ((tempItem = theShop.getItem(Integer.parseInt(readFromSocket))) != null) {
+                                int q = tempItem.getItemQuantity();
+                                theShop.getTheInventory().checkIfOrderIsNeeded(tempItem);
+                                if (q > 0) {
+                                    tempItem.setItemQuantity(q - 1);
+                                    io.getSocketOut().println("new item quantity of " + tempItem.getItemName() + " is " + (q - 1));
+                                } else
+                                    io.getSocketOut().println("item quantity already 0");
                             }
-                            else
-                                io.getSocketOut().println("item quantity already 0");
-                            }
-                        else
-                            io.getSocketOut().println("item not found");
+                        } catch (NumberFormatException e){
+                            io.getSocketOut().println("Item not found");
+                        }
                         break;
 
                     //////////////////////////////////////////////////////////////
 
                     case 6: //grab today's order
-                        sendObjectOverSocket(theShop.getTheInventory().getMyOrder());
+                        Order order = theShop.getTheInventory().getOrder();
+                        sendObjectOverSocket(order);
                         break;
 
                     //////////////////////////////////////////////////////////////

@@ -13,32 +13,23 @@ public class Item implements Serializable {
 	private double itemPrice;
 	private boolean alreadyOrdered;
 	private Supplier supplier;
-	private static final int ORDERQUANTITY = 40;
+	private static final int ORDER_QUANTITY = 40;
 	private static final int MINIMUM_NUMBER = 20;
 	
 	
-	public Item (int id, String name, int quanitiy, double price, Supplier supplier) {
+	public Item (int id, String name, int quantity, double price, Supplier supplier) {
 		this.itemId = id;
 		this.itemName = name;
-		this.itemQuantity = quanitiy;
+		this.itemQuantity = quantity;
 		this.itemPrice = price;
 		this.supplier = supplier;
 		this.alreadyOrdered = false;
 	}
 
-//	public boolean decreaseItemQuantity () {
-//		if (itemQuantity > 0) {
-//			itemQuantity--;
-//		    return true;
-//		}
-//		else
-//			return false;
-//	}
-
 	public OrderLine placeOrder (){
 		OrderLine ol;
-		if (getItemQuantity() < MINIMUM_NUMBER && alreadyOrdered == false){
-			ol = new OrderLine (this, ORDERQUANTITY);
+		if ((itemQuantity < MINIMUM_NUMBER) && (alreadyOrdered == false)){
+			ol = new OrderLine (this, ORDER_QUANTITY);
 			alreadyOrdered = true;
 			return ol;
 		}

@@ -29,6 +29,10 @@ public class Order implements Serializable {
 		return orderId;
 	}
 
+	public Date getOrderDate(){
+		return today;
+	}
+
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
 	}

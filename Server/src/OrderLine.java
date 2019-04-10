@@ -28,8 +28,9 @@ public class OrderLine implements Serializable {
 	}
 
 	public String toString (){
-		return  "Item Name: " + theItem.getItemName() +
-				", Item ID: " + theItem.getItemId()+ "\n" + 
-				"Order Quantity: " + orderQuantity + "\n";
+		return  "Item description:\t\t" + theItem.getItemName() + "\n" +
+				"Item ID: " + theItem.getItemId()+ "\n" +
+				"Amount ordered:\t\t" + orderQuantity + "\n" +
+				"Supplier:\t\t" + theItem.getSupplier();
 	}
 }

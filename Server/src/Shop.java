@@ -3,15 +3,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 public class Shop {
-	
 	private Inventory theInventory;
-
 	private ArrayList <Supplier> supplierList;
-	
-//	public Shop (Inventory inventory, ArrayList <Supplier> suppliers) {
-//		theInventory = inventory;
-//		supplierList = suppliers;
-//	}
 
 	public Shop(){
 		supplierList = new ArrayList<>();
@@ -49,12 +42,12 @@ public class Shop {
 	public void setSupplierList (ArrayList <Supplier> suppliers){
 		supplierList = suppliers;
 	}
-	
 
 	public String listAllItems() {
 		return theInventory.toString();
 		
 	}
+
 	public boolean decreaseItem (String name) {
 		boolean status = false;
 		Item item = getItem(name);
